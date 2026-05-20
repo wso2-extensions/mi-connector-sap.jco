@@ -1,0 +1,14 @@
+{
+    "name": "SAP JCo",
+    "owner": "WSO2",
+    "product": "MI",
+    "category": "Other",
+    "documentationUrl": "https://mi.docs.wso2.com/en/4.4.0/",
+    "mavenGroupId": "org.wso2.integration.connector",
+    "mavenArtifactId": "mi-connector-sap.jco",
+    "description": "SAP JCo connector for Micro Integrator",
+    "status": "Active",
+    "rank": 5,
+    "type": "Connector",
+    "releases": []
+}
