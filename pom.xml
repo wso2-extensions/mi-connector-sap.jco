@@ -97,11 +97,6 @@
                   <artifactId>module-core</artifactId>
                   <version>1.0.2</version>
                 </artifactItem>
-                <artifactItem>
-                  <groupId>org.wso2.integration.connector</groupId>
-                  <artifactId>mi-native</artifactId>
-                  <version>1.0.1-SNAPSHOT</version>
-                </artifactItem>
               </artifactItems>
             </configuration>
           </execution>
