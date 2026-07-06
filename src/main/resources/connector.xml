@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2025, WSO2 LLC. (https://www.wso2.com).
+  ~
+  ~ WSO2 LLC. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+<connector>
+    <component name="sap_jco" package="io.ballerina.stdlib.mi">
+        <dependency component="config"/>
+        <dependency component="functions"/>
+        <description>## Overview
+
+[SAP](https://www.sap.com/india/index.html) is a global leader in enterprise resource planning (ERP) software. Beyond
+ERP, SAP offers a diverse range of solutions including human capital management (HCM), customer relationship
+management (CRM), enterprise performance management (EPM), product lifecycle management (PLM), supplier relationship
+management (SRM), supply chain management (SCM), business technology platform (BTP), and the SAP AppGyver programming
+environment for businesses.
+
+The &#x60;ballerinax/sap.jco&#x60; package exposes the SAP JCo library as ballerina functions.
+
+
+### Key Features
+
+- Connect to SAP systems via SAP JCo (Java Connector)
+- Execute BAPIs and Remote Function Calls (RFC)
+- Support for IDoc processing and exchange — both sending and receiving
+- Distinct typed error hierarchy (&#x60;ConnectionError&#x60;, &#x60;LogonError&#x60;, &#x60;ResourceError&#x60;, &#x60;SystemError&#x60;, &#x60;AbapApplicationError&#x60;, &#x60;IDocError&#x60;, &#x60;ConfigurationError&#x60;, &#x60;ExecutionError&#x60;, and more) for precise error handling
+- Singleton destination and server data providers enabling multiple concurrent clients and listeners without JCo provider conflicts
+- Compatible with SAP ERP and S/4HANA systems
+
+## Setup Guide
+
+### Obtain SAP Connection Parameters
+
+To connect to an SAP system, you need to obtain the following connection parameters from your SAP administrator. These
+are some common
+parameters required to establish a client:
+
+- **Host**: The hostname or IP address of the SAP server.
+- **System Number**: Identifies the system within the landscape.
+- **Client**: Specifies the client ID of the SAP system, which is used for login.
+- **User Name**: Your SAP user account name.
+- **Password**: Your account password.
+
+There may be additional parameters required based on your organization&#x27;s SAP configuration. Consult your SAP
+administrator for the complete list of parameters needed for your setup.
+
+### Download and Add Middleware Libraries
+
+To use the SAP JCo connector, you need to download the &#x60;sapidoc3.jar&#x60; and &#x60;sapjco3.jar&#x60; middleware libraries from the
+SAP
+support portal and add the dependencies to your Ballerina project.
+
+#### Step 1: Download Middleware Libraries
+
+1. Go to the [SAP Support Portal](https://support.sap.com/en/index.html).
+2. Search for and download the following files:
+   - sapjco3.jar
+   - sapidoc3.jar
+
+#### Step 2: Setting Up Environment
+
+1. **Install JRE**: Ensure you have Java Runtime Environment (JRE) version 21 installed on your system.
+
+2. **Set CLASSPATH**: Configure the CLASSPATH environment variable to include the JAR files and the following native SAP JCo libraries based on your operating system:
+
+   | Operating System | Native SAP JCo Library  |
+   |------------------|-------------------------|
+   | Linux            | &#x60;libsapjco3.so&#x60;         |
+   | Windows          | &#x60;sapjco3.dll&#x60;           |
+   | MacOS            | &#x60;libsapjco3.dylib&#x60;      |
+
+#### Step 3: Add Dependencies to Ballerina.toml
+
+After downloading the libraries, add them to your &#x60;Ballerina.toml&#x60; file in the Ballerina project by specifying the
+paths and relevant details.
+
+&#x60;&#x60;&#x60;toml
+[[platform.java21.dependency]]
+path &#x3D; &quot;../sapidoc3.jar&quot;
+groupId &#x3D; &quot;com.sap&quot;
+artifactId &#x3D; &quot;com.sap.conn.idoc&quot;
+version &#x3D; &quot;3.1.*&quot;
+
+[[platform.java21.dependency]]
+path &#x3D; &quot;../sapjco3.jar&quot;
+groupId &#x3D; &quot;com.sap&quot;
+artifactId &#x3D; &quot;com.sap.conn.jco&quot;
+version &#x3D; &quot;3.1.*&quot;
+&#x60;&#x60;&#x60;
+
+Ensure that the paths to the JAR files are correct and relative to your project directory.
+
+## Quickstart
+
+To use the SAP JCo connector in your Ballerina application, modify the &#x60;.bal&#x60; file as follows:
+
+### Step 1: Import connector
+
+Import the &#x60;ballerinax/sap.jco&#x60; module into your Ballerina project.
+
+&#x60;&#x60;&#x60;ballerina
+import ballerinax/sap.jco;
+&#x60;&#x60;&#x60;
+
+### Step 2: Create a new connector instance
+
+#### Initialize a new JCo client instance
+
+Configure the necessary SAP connection parameters in &#x60;Config.toml&#x60; in the project directory:
+
+&#x60;&#x60;&#x60;toml
+[configurations]
+ashost &#x3D; &quot;localhost&quot;
+sysnr &#x3D; &quot;00&quot;
+jcoClient &#x3D; &quot;000&quot;
+user &#x3D; &quot;JCOTESTER&quot;
+passwd &#x3D; &quot;SECRET&quot;
+group &#x3D; &quot;DEV2&quot;
+lang &#x3D; &quot;EN&quot;
+&#x60;&#x60;&#x60;
+
+Then, create a new JCo client instance for RFC and IDoc operations.
+
+&#x60;&#x60;&#x60;ballerina
+configurable jco:DestinationConfig configurations &#x3D; ?;
+jco:Client jcoClient &#x3D; check new (configurations);
+&#x60;&#x60;&#x60;
+
+Provide an explicit &#x60;destinationId&#x60; when the client is referenced by a listener as its &#x60;repositoryDestination&#x60;:
+
+&#x60;&#x60;&#x60;ballerina
+jco:Client jcoClient &#x3D; check new (configurations, destinationId &#x3D; &quot;MY_DESTINATION&quot;);
+&#x60;&#x60;&#x60;
+
+#### Initialize a new JCo listener instance
+
+Configure the necessary SAP connection parameters in &#x60;Config.toml&#x60; in the project directory:
+
+&#x60;&#x60;&#x60;toml
+[configurations]
+gwhost &#x3D; &quot;sapgw.example.com&quot;
+gwserv &#x3D; &quot;sapgw00&quot;
+progid &#x3D; &quot;JCO_PROGRAM_ID&quot;
+connectionCount &#x3D; 2
+repositoryDestination &#x3D; &quot;MY_DESTINATION&quot;
+&#x60;&#x60;&#x60;
+
+&#x60;repositoryDestination&#x60; must match the &#x60;destinationId&#x60; of an already-initialized &#x60;Client&#x60; that provides IDoc metadata lookups. It can be omitted if the listener does not require metadata resolution.
+
+Then, create a new JCo listener instance for IDoc listener operations.
+
+&#x60;&#x60;&#x60;ballerina
+configurable jco:ServerConfig configurations &#x3D; ?;
+jco:Listener jcoListener &#x3D; check new (configurations);
+&#x60;&#x60;&#x60;
+
+Alternatively, use &#x60;AdvancedConfig&#x60; (a flat &#x60;map&lt;string&gt;&#x60;) to supply raw JCo property keys when you need settings not covered by &#x60;ServerConfig&#x60; or &#x60;DestinationConfig&#x60;:
+
+&#x60;&#x60;&#x60;toml
+[configurations]
+&quot;jco.server.gwhost&quot; &#x3D; &quot;sample.gwhost.com&quot;
+&quot;jco.server.gwserv&quot; &#x3D; &quot;sapgw00&quot;
+&quot;jco.server.progid&quot; &#x3D; &quot;SAMPLE_PROG_ID&quot;
+&quot;jco.server.connection_count&quot; &#x3D; &quot;2&quot;
+&quot;jco.server.repository_destination&quot; &#x3D; &quot;MY_DESTINATION&quot;
+&quot;jco.client.ashost&quot; &#x3D; &quot;10.128.0.1&quot;
+&quot;jco.client.sysnr&quot; &#x3D; &quot;00&quot;
+&quot;jco.client.client&quot; &#x3D; &quot;100&quot;
+&quot;jco.client.user&quot; &#x3D; &quot;JCOTESTER&quot;
+&quot;jco.client.passwd&quot; &#x3D; &quot;SECRET&quot;
+&quot;jco.client.r3name&quot; &#x3D; &quot;DEV&quot;
+&#x60;&#x60;&#x60;
+
+### Step 3: Invoke connector operations
+
+Now you can use the operations available within the connector.
+
+#### Execute a Function Module via RFC
+
+&#x60;&#x60;&#x60;ballerina
+public function main() returns error? {
+    ExportParams result &#x3D; check jcoClient-&gt;execute(&quot;TEST_FUNCTION&quot;, {
+        importParameters: {
+            importParam1: &quot;Hello&quot;,
+            importParam2: 123,
+            importParam3: 123.45,
+            importParam4: 123.456
+        }
+    });
+    io:println(&quot;Result: &quot;, result);
+}
+&#x60;&#x60;&#x60;
+
+#### Send IDocs to an SAP system
+
+&#x60;&#x60;&#x60;ballerina
+public function main() returns error? {
+    xml iDoc &#x3D; check io:fileReadXml(&quot;resources/sample.xml&quot;);
+    check jcoClient-&gt;sendIDoc(iDoc);
+    io:println(&quot;IDoc sent successfully.&quot;);
+}
+&#x60;&#x60;&#x60;
+
+#### Close the client
+
+Call &#x60;close&#x60; when the client is no longer needed to release the JCo destination registration:
+
+&#x60;&#x60;&#x60;ballerina
+check jcoClient.close();
+&#x60;&#x60;&#x60;
+
+After &#x60;close&#x60;, any call to &#x60;execute&#x60; or &#x60;sendIDoc&#x60; returns a &#x60;ConfigurationError&#x60;. Calling &#x60;close&#x60; multiple times is safe.
+
+#### Initialize a listener for incoming IDocs
+
+&#x60;&#x60;&#x60;ballerina
+service jco:Service on iDocListener {
+    remote function onReceive(xml iDoc) returns error? {
+        check io:fileWriteXml(&quot;resources/received_idoc.xml&quot;, iDoc);
+        io:println(&quot;IDoc received and saved.&quot;);
+    }
+    remote function onError(error &#x27;error) returns error? {
+        io:println(&quot;Error occurred: &quot;, &#x27;error.message());
+    }
+}
+&#x60;&#x60;&#x60;
+
+### Step 4: Run the Ballerina application
+
+To run your Ballerina application which interacts with SAP using the SAP JCo Connector, execute:
+
+&#x60;&#x60;&#x60;bash
+bal run
+&#x60;&#x60;&#x60;
+
+## Examples
+
+The &#x60;Ballerina SAP JCo Connector&#x60; provides practical examples illustrating usage in various scenarios. Explore these
+scenarios to understand how to automate processes involving SAP systems and external data sources using Ballerina.
+
+1. [SAP Inventory Update via RFC](https://github.com/ballerina-platform/module-ballerinax-sap.jco/tree/main/examples/sap_inventory_update) - Integrate external inventory data into an SAP system and
+   update inventory records through an RFC.
+
+2. [Automate iDoc Dispatch](https://github.com/ballerina-platform/module-ballerinax-sap.jco/tree/main/examples/idoc_automation) - Demonstrate the automation of generating and dispatching iDocs for
+   shipment details.
+
+3. [Automated Supplier Order Processing via iDoc Listener](https://github.com/ballerina-platform/module-ballerinax-sap.jco/tree/main/examples/order_idoc_listener) - Set up an iDoc listener to automate
+   supplier order processing.
+</description>
+    </component>
+    <icon>icon/icon-small.png</icon>
+    <displayName>sap_jco</displayName>
+</connector>
