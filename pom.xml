@@ -41,11 +41,6 @@
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>io.ballerina</groupId>
-      <artifactId>ballerinax-sap.jco</artifactId>
-      <version>${ballerinax.sap.jco.version}</version>
-    </dependency>
 
     <!-- MI framework jars — copied as-is into lib/ by maven-dependency-plugin -->
     <dependency>
