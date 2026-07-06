@@ -75,8 +75,8 @@
 
       <!--
         Copy MI framework jars directly into target/connector/dependencies/ so the
-        assembly plugin picks them up into lib/. These are not shaded — they must
-        remain as individual jars with their original package names.
+        assembly plugin picks them up into lib/ as individual jars with their
+        original package names.
       -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -108,53 +108,6 @@
                   <version>1.0.1-SNAPSHOT</version>
                 </artifactItem>
               </artifactItems>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!--
-        Shade ballerinax-sap.jco (which already bundles sapjco3 and sapidoc3 internally).
-        No package relocation is applied for com.sap.* — SAP JCo binds to a JNI native
-        library (libsapjco3.so / sapjco3.dll) using hard-coded JVM class name mangling.
-        Relocating com.sap.* would produce UnsatisfiedLinkError on the first SAP call
-        because the native symbol names would no longer match the relocated class names.
-      -->
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.5.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-              <outputFile>
-                ${project.build.directory}/connector/dependencies/ballerinax-sap.jco-${ballerinax.sap.jco.version}.jar
-              </outputFile>
-              <artifactSet>
-                <includes>
-                  <include>io.ballerina:ballerinax-sap.jco</include>
-                </includes>
-              </artifactSet>
-              <filters>
-                <filter>
-                  <artifact>org.wso2.integration.connector:mi-connector-sap.jco</artifact>
-                  <excludes>
-                    <exclude>**</exclude>
-                  </excludes>
-                </filter>
-                <!-- Strip com.sap.* from the Ballerina fat-jar — provided as
-                     sapjco3.jar and sapidoc3.jar separately in lib/ -->
-                <filter>
-                  <artifact>io.ballerina:ballerinax-sap.jco</artifact>
-                  <excludes>
-                    <exclude>com/sap/**</exclude>
-                  </excludes>
-                </filter>
-              </filters>
             </configuration>
           </execution>
         </executions>
