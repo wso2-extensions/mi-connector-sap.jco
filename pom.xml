@@ -40,6 +40,13 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
 
+  <scm>
+    <connection>scm:git:https://github.com/wso2-extensions/mi-connector-sap.jco.git</connection>
+    <url>https://github.com/wso2-extensions/mi-connector-sap.jco.git</url>
+    <developerConnection>scm:git:https://github.com/wso2-extensions/mi-connector-sap.jco</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+
   <dependencies>
 
     <!-- MI framework jars — copied as-is into lib/ by maven-dependency-plugin -->
