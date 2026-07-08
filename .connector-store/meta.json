@@ -10,5 +10,204 @@
     "status": "Active",
     "rank": 5,
     "type": "Connector",
-    "releases": []
+    "releases": [
+        {
+            "tagName": "v1.0.0",
+            "products": [
+                "MI 4.6.0"
+            ],
+            "operations": [
+                {
+                    "name": "close",
+                    "description": "close",
+                    "params": [
+                        {
+                            "name": "responseVariable",
+                            "type": "string",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "The target variable in which the output of the operation will be stored"
+                        },
+                        {
+                            "name": "overwriteBody",
+                            "type": "checkbox",
+                            "required": false,
+                            "defaultValue": "false",
+                            "description": "Replace the Message Body in Message Context with the output payload of the operation (This will remove the payload from the above variable. But other elements such as headers and attributes will remain)."
+                        }
+                    ],
+                    "isHidden": false
+                },
+                {
+                    "name": "execute",
+                    "description": "execute",
+                    "params": [
+                        {
+                            "name": "functionName",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": ""
+                        },
+                        {
+                            "name": "importParameters",
+                            "type": "stringOrExpression",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "Scalar values and structures sent to SAP as import parameters"
+                        },
+                        {
+                            "name": "tableParameters",
+                            "type": "stringOrExpression",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "Named tables sent to SAP as table parameters, where each entry maps a table parameter name to its rows"
+                        },
+                        {
+                            "name": "returnTypeDataType",
+                            "type": "combo",
+                            "required": false,
+                            "defaultValue": "RfcRecord",
+                            "description": "Supported values: RfcRecord, xml, json"
+                        },
+                        {
+                            "name": "responseVariable",
+                            "type": "string",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "The target variable in which the output of the operation will be stored"
+                        },
+                        {
+                            "name": "overwriteBody",
+                            "type": "checkbox",
+                            "required": false,
+                            "defaultValue": "false",
+                            "description": "Replace the Message Body in Message Context with the output payload of the operation (This will remove the payload from the above variable. But other elements such as headers and attributes will remain)."
+                        }
+                    ],
+                    "isHidden": false
+                },
+                {
+                    "name": "sendIDoc",
+                    "description": "send idoc",
+                    "params": [
+                        {
+                            "name": "iDoc",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": ""
+                        },
+                        {
+                            "name": "iDocType",
+                            "type": "combo",
+                            "required": false,
+                            "defaultValue": "0",
+                            "description": "Supported values: I, Q, 3, 2, 0"
+                        },
+                        {
+                            "name": "responseVariable",
+                            "type": "string",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "The target variable in which the output of the operation will be stored"
+                        },
+                        {
+                            "name": "overwriteBody",
+                            "type": "checkbox",
+                            "required": false,
+                            "defaultValue": "false",
+                            "description": "Replace the Message Body in Message Context with the output payload of the operation (This will remove the payload from the above variable. But other elements such as headers and attributes will remain)."
+                        }
+                    ],
+                    "isHidden": false
+                }
+            ],
+            "connections": [
+                {
+                    "name": "sap_jco_Client",
+                    "description": "Connection Config for sap_jco_Client connection",
+                    "params": [
+                        {
+                            "name": "connectionName",
+                            "type": "string",
+                            "required": true,
+                            "defaultValue": "sap_jco_Client_connection_1",
+                            "description": "The name for the sap_jco_Client connection"
+                        },
+                        {
+                            "name": "configDataType",
+                            "type": "combo",
+                            "required": true,
+                            "defaultValue": "DestinationConfig",
+                            "description": "Supported values: DestinationConfig, map"
+                        },
+                        {
+                            "name": "configMap",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "Expecting JSON object with key-value pairs"
+                        },
+                        {
+                            "name": "config_ashost",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "SAP application server host name"
+                        },
+                        {
+                            "name": "config_sysnr",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "SAP system number"
+                        },
+                        {
+                            "name": "config_jcoClient",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "SAP client number"
+                        },
+                        {
+                            "name": "config_user",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "SAP logon user name"
+                        },
+                        {
+                            "name": "config_passwd",
+                            "type": "stringOrExpression",
+                            "required": true,
+                            "defaultValue": "",
+                            "description": "SAP logon password"
+                        },
+                        {
+                            "name": "config_lang",
+                            "type": "stringOrExpression",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "SAP logon language"
+                        },
+                        {
+                            "name": "config_group",
+                            "type": "stringOrExpression",
+                            "required": false,
+                            "defaultValue": "",
+                            "description": "SAP logon group for load balancing"
+                        },
+                        {
+                            "name": "destinationId",
+                            "type": "stringOrExpression",
+                            "required": false,
+                            "defaultValue": "uuid:createType4AsString()",
+                            "description": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
 }
